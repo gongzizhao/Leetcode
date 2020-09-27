@@ -1,0 +1,47 @@
+给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
+你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+
+示例:
+给定 1->2->3->4, 你应该返回 2->1->4->3.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        ListNode *p=new ListNode(0),*cur;
+        p->next=head;
+        cur=p;
+        while(head&&head->next){
+            ListNode *firstNode=head;
+            ListNode *secondNode=head->next;
+//为了清晰明了，我们新建两个节点，一节点和二节点
+            cur->next=secondNode;
+            firstNode->next=secondNode->next;
+            secondNode->next=firstNode;
+
+            cur=firstNode;
+            head=firstNode->next;
+        }
+        return p->next;
+    }
+};
+////////////////////////递归///////////////////////////////
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(head==NULL||head->next==NULL){
+            return head;
+        }
+        ListNode *p=head->next,*temp=p->next;
+        p->next=head;
+        head->next=swapPairs(temp);
+        return p;
+    }
+};
