@@ -1,0 +1,36 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        if(head==NULL||head->next==NULL) return true;
+        ListNode *slow=head,*fast=head;
+        //用快慢指针获取链表中点
+        while(fast->next!=NULL&&fast->next->next!=NULL){
+            slow=slow->next;
+            fast=fast->next->next;
+        }
+        ListNode *last=slow->next,*prev=head;
+        //翻转链表，思想是依次把节点放到前面，也就是slow（即中点）的后面；而前面翻转链表的题目是依次向空链表添加
+        while(last->next!=NULL){
+            ListNode *temp=last->next;
+            last->next=temp->next;
+            temp->next=slow->next;
+            slow->next=temp;
+            
+        }
+        //翻转后 依次比较 两个半链表的值即可
+        while(slow->next){
+            slow=slow->next;
+            if(slow->val!=prev->val) return false;
+            prev=prev->next;
+        }
+        return true;
+    }
+};
