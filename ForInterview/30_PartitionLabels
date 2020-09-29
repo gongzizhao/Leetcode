@@ -1,0 +1,74 @@
+字符串 S 由小写字母组成。我们要把这个字符串划分为尽可能多的片段，同一个字母只会出现在其中的一个片段。返回一个表示每个字符串片段的长度的列表。
+
+示例 1：
+输入：S = "ababcbacadefegdehijhklij"
+输出：[9,7,8]
+解释：
+划分结果为 "ababcbaca", "defegde", "hijhklij"。
+每个字母最多出现在一个片段中。
+像 "ababcbacadefegde", "hijhklij" 的划分是错误的，因为划分的片段数较少。
+ 
+提示：
+
+S的长度在[1, 500]之间。
+S只包含小写字母 'a' 到 'z' 。
+
+题解：也就是说，找到同字母的所在区间，看有多少个非重叠区间。
+class Solution {
+public:
+    vector<int> partitionLabels(string S) {
+        vector<vector<int>> nums(27, vector<int>(2, 0));//用来存放27个字母的位置区间
+        vector<int> result;
+        nums[S[0]-'a'][0]=1;//未出现过的字母的值为0，否则至少为1.
+        nums[S[0]-'a'][1]=1;
+        for(int i=1;i<S.size();i++){//这样得到了每个字母的位置区间
+            if(nums[S[i]-'a'][0]==0){
+                nums[S[i]-'a'][0]=i+1;
+                nums[S[i]-'a'][1]=i+1;
+            }else{
+                nums[S[i]-'a'][1]=i+1;
+            }            
+        }
+        sort(nums.begin(),nums.end());//排序
+        int i,left,right;
+        for(i=0;i<26;i++){//将未出现过的字母去除
+            if(nums[i][0]==0) continue;
+            else break;
+        }
+        left=nums[i][0];
+        right=nums[i][1];//left和right是存放有重复字母的最小区间
+        while(i++<26){//开始贪心
+           if(nums[i][0]<right){
+               right=max(right,nums[i][1]);
+           }else{//若新区间的左值不在旧区间内，则可以开始一个新的left和right
+               result.push_back(right-left+1);
+               left=nums[i][0];
+               right=nums[i][1];
+           }
+        }
+        result.push_back(right-left+1);
+        return result;
+    }
+};
+///////////////////////////////////////优化////////////////////////////////////
+class Solution {
+public:
+    vector<int> partitionLabels(string S) {
+        int N = S.size();
+        vector<int> ends(26, -1);
+        for (int i = 0; i < N; ++i) {//不需要重新建立二维数组进行区间分配，直接用i所在位置表示left即可
+            ends[S[i] - 'a'] = i;
+        }
+        vector<int> res;
+        int i = 0;
+        while (i < N) {
+            int r = ends[S[i] - 'a'];
+            for (int j = i + 1; j <= r; ++j) {
+                r = max(r, ends[S[j] - 'a']);//找到当前的i所在重叠区间的右值
+            }
+            res.push_back(r - i + 1);
+            i = r + 1;//从旧右值的下一个数开始重新找
+        }
+        return res;
+    }
+};
