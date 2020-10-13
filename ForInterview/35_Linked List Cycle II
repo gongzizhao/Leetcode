@@ -1,0 +1,44 @@
+给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。注意，pos 仅仅是用于标识环的情况，并不会作为参数传递到函数中。
+说明：不允许修改给定的链表。
+
+进阶：
+你是否可以使用 O(1) 空间解决此题？
+
+主要考察两知识点：
+1.判断链表是否环
+2.如果有环，如何找到这个环的入口
+fast指针一定先进入环中，如果fast 指针和slow指针相遇的话，一定是在环中相遇，这是毋庸置疑的。
+a+x(b+c)+b=2(a+y(b+c)+b)
+x为fast跑的圈数  y为slow跑的圈数
+a=c+(x-2y−1)(b+c)，则意味着从头结点出发一个指针，从相遇节点 也出发一个指针，这两个指针每次只走一个节点， 那么当这两个指针相遇的时候就是 环形入口的节点
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode *fast=head;
+        ListNode *slow=head;
+        while(fast!=NULL&&fast->next!=NULL){
+            fast=fast->next->next;
+            slow=slow->next;
+            if(fast==slow){/ 快慢指针相遇，此时从head 和 相遇点，同时查找直至相遇
+                ListNode *index1=fast;
+                ListNode *index2=head;
+                while(index1!=index2){
+                    index2=index2->next;
+                    index1=index1->next;
+                }
+                return index2;//返回环的入口
+            }
+        }
+        return NULL;
+    }
+};
