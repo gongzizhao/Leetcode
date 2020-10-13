@@ -13,7 +13,7 @@ class Solution {
 public:
     void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
         int last = m+n-1;
-        while(n){
+        while(n){//如果nums1的数字已经复制完，不要忘记把nums2 的数字继续复制；如果nums2 的数字已经复制完，剩余nums1 的数字不需要改变，因为它们已经被排好序。
             if(m==0){
                 nums1[last--]=nums2[--n];
             }else if(nums1[m-1]>nums2[n-1]){
@@ -22,3 +22,4 @@ public:
         }
     }
 };
+//如果只是希望增加a 的值，而不需要返回值，则推荐使用++a，其运行速度会略快一些。
