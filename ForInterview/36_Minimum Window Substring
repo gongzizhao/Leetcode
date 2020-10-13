@@ -1,0 +1,50 @@
+给你一个字符串 S、一个字符串 T 。请你设计一种算法，可以在 O(n) 的时间复杂度内，从字符串 S 里面找出：包含 T 所有字符的最小子串。
+示例：
+输入：S = "ADOBECODEBANC", T = "ABC"
+输出："BANC" 
+
+提示：
+如果 S 中不存这样的子串，则返回空字符串 ""。
+如果 S 中存在这样的子串，我们保证它是唯一的答案。
+
+本题使用滑动窗口求解，即两个指针l 和r 都是从最左端向最右端移动，且l 的位置一定在r 的左边或重合。
+注意本题虽然在for 循环里出现了一个while 循环，但是因为while 循环负责移动l 指针，且l 只会从左到右移动一次，因此总时间复杂度仍然是O(n)。
+本题使用了长度为128的数组来映射字符，也可以用哈希表替代；其中chars 表示目前每个字符缺少的数量，flag 表示每个字符是否在T 中存在。
+
+这里的cnt表示s中已发现的t的字母的个数。
+
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        vector<int> chars(128,0);
+        vector<bool> flag(128,false);
+        //统计t中的字符情况
+        for(int i=0;i<t.size();++i){
+            flag[t[i]]=true;
+            ++chars[t[i]];
+        }
+        //移动滑动窗口，不断更改统计数据
+        int cnt=0,l=0,min_l=0;
+        int min_size=s.size()+1;//初始化为大值，以防不存在这样的子串
+        for(int r=0;r<s.size();++r){
+            if(flag[s[r]]){
+                if(--chars[s[r]]>=0){
+                    ++cnt;
+                }
+                //若目前滑动窗口已包含t中全部字符
+                //则尝试将l右移，在不影响结果的情况下获得最短子字符串
+                while(cnt==t.size()){
+                    if(r-l+1<min_size){
+                        min_l=l;
+                        min_size=r-l+1;//这里保存已满足条件子串的信息
+                    }
+                    if(flag[s[l]]&&++chars[s[l]]>0){//如果抛弃的s[l]影响到了子串，则修改cnt的值
+                        --cnt;
+                    }
+                    ++l;
+                }
+            }
+        }
+        return min_size>s.size()?"":s.substr(min_l,min_size);
+    }
+};
