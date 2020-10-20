@@ -1,11 +1,8 @@
 归并排序：分治思想。先将问题分解成小的问题然后递归求解，再将有序的子序列合并。
+
 package sortdemo;
 
 import java.util.Arrays;
-
-/**
- * Created by chengxiao on 2016/12/8.
- */
 public class MergeSort {
     public static void main(String []args){
         int []arr = {9,8,7,6,5,4,3,2,1};
