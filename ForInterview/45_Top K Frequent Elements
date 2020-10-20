@@ -1,0 +1,35 @@
+给定一个非空的整数数组，返回其中出现频率前 k 高的元素。
+
+思路：
+1.要统计元素出现频率
+2.对频率排序
+3.找出前K个高频元素
+
+class Solution {
+public:
+    class myComparison{
+    public:
+        bool operator()(const pair<int,int>& lhs, const pair<int,int>& rhs){
+            return lhs.second>rhs.second;
+        }
+    };
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> map;
+        for(int i=0;i<nums.size();i++){
+            map[nums[i]]++;//统计频率
+        }
+        //因为要把整个map放在小顶堆里所以用迭代器遍历
+        priority_queue<pair<int,int>,vector<pair<int,int> >,myComparison> store;
+        for(unordered_map<int,int>::iterator it=map.begin();it!=map.end();it++){
+            store.push(*it);
+            if(store.size()>k) store.pop();
+        }
+        //因为是小顶堆，所以倒序遍历
+        vector<int> result(k);
+        for(int i=k-1;i>=0;i--){
+            result[i]=store.top().first;
+            store.pop();
+        }
+        return result;
+    }
+};
