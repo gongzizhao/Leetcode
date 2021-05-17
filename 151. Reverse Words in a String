@@ -1,0 +1,43 @@
+给定一个字符串，逐个翻转字符串中的每个单词。
+
+说明：
+
+无空格字符构成一个 单词 。
+输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。
+ 
+
+示例 1：
+
+输入："the sky is blue"
+输出："blue is sky the"
+
+
+var reverseWords=function(s){
+    let r=s.length-1,l=r,res="";
+    while(l>=0){
+        //先找到单词尾部
+        while(s[r]===" "){
+            r--;
+        }
+        l=r;
+        //给上次单词加空格，排除第一次
+        if(l>=0&&res){
+            res+=" ";
+        }
+        //再找到单词头部
+        while(s[l]&&s[l]!==" "){
+            l--;
+        }
+        //遍历单词并添加
+        for(let i=l+1,j=r;i<=j;i++){
+            res+=s[i];
+        }
+        //跳到下一个单词
+        r=l;
+    }
+    return res;
+};
+var s="the sky is blue";
+let ss=reverseWords(s);
+console.log(ss);
